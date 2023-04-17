@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+	<title>Параллакс</title>
+
+	<link rel="stylesheet" href="./css/main.css">
+
+	<script src="/libs/gsap/gsap.min.js" defer></script>
+	<script src="/libs/gsap/ScrollTrigger.min.js" defer></script>
+	<script src="/libs/gsap/ScrollSmoother.min.js" defer></script>
+	
+	<script src="./js/app.js" defer></script>
+</head>
+<body>
+	
+
+	<div class="wrapper">
+		<div class="container">
+			<header class="main-header">
+				<div class="layers">
+					<script>
+						var canvas = document.createElement('canvas');
+						var ctx = canvas.getContext('2d');
+						var MAX_FLIES = 15;
+						var FLY_XSPEED_RANGE = [-1, 1];
+						var FLY_YSPEED_RANGE = [-0.5, 0.5];
+						var FLY_SIZE_RANGE = [1, 5];
+						var FLY_LIFESPAN_RANGE = [75, 150];
+						var flies = [];
+						 
+						function randomRange(min, max) {
+						return Math.random() * (max - min) + min;
+						}
+						 
+						function Fly(options) {
+						if (!options) {
+						options = {};
+						}
+						this.x = options.x || randomRange(0, canvas.width);
+						this.y = options.y || randomRange(0, canvas.height);
+						this.xSpeed = options.xSpeed || randomRange(FLY_XSPEED_RANGE[0], FLY_XSPEED_RANGE[1]);
+						this.ySpeed = options.ySpeed || randomRange(FLY_YSPEED_RANGE[0], FLY_YSPEED_RANGE[1]);
+						this.size = options.size || randomRange(FLY_SIZE_RANGE[0], FLY_SIZE_RANGE[1]);
+						this.lifeSpan = options.lifeSpan || randomRange(FLY_LIFESPAN_RANGE[0], FLY_LIFESPAN_RANGE[1]);
+						this.age = 0;
+						this.colors = options.colors || {
+						red: 207,
+						green: 255,
+						blue: 4,
+						alpha: 0
+						};
+						}
+						 
+						function fitToScreen(element) {
+						element.width = window.innerWidth;
+						element.height = window.innerHeight;
+						}
+						 
+						function clearScreen() {
+						ctx.beginPath();
+						ctx.fillStyle = 'rgb(0, 0, 0)';
+						ctx.rect(0, 0, canvas.width, canvas.height);
+						ctx.fill();
+						}
+						 
+						function createFlies() {
+						if (flies.length !== MAX_FLIES) {
+						flies.push(new Fly());
+						}
+						}
+						 
+						function moveFlies() {
+						flies.forEach(function(fly) {
+						fly.x += fly.xSpeed;
+						fly.y += fly.ySpeed;
+						fly.age++;
+						if (fly.age < fly.lifeSpan / 2) {
+						fly.colors.alpha += 1 / (fly.lifeSpan / 2);
+						if (fly.colors.alpha > 1) {
+						fly.colors.alpha = 1;
+						}
+						} else {
+						fly.colors.alpha -= 1 / (fly.lifeSpan / 2);
+						if (fly.colors.alpha < 0) {
+						fly.colors.alpha = 0;
+						}
+						}
+						});
+						}
+						 
+						function removeFlies() {
+						var i = flies.length;
+						while (i--) {
+						var fly = flies[i];
+						if (fly.age >= fly.lifeSpan) {
+						flies.splice(i, 1);
+						}
+						}
+						}
+						 
+						function drawFlies() {
+						flies.forEach(function(fly) {
+						ctx.beginPath();
+						ctx.fillStyle = 'rgba(' + fly.colors.red + ', ' + fly.colors.green + ', ' + fly.colors.blue + ', ' + fly.colors.alpha + ')';
+						ctx.arc(fly.x, fly.y, fly.size, 0, Math.PI * 2, false);
+						ctx.fill();
+						});
+						}
+						 
+						function render() {
+						clearScreen();
+						createFlies();
+						moveFlies();
+						removeFlies();
+						drawFlies();
+						}
+						window.addEventListener('resize', function() {
+						fitToScreen(canvas);
+						});
+						document.querySelector('body').appendChild(canvas);
+						fitToScreen(canvas);
+						(function animationLoop() {
+						window.requestAnimationFrame(animationLoop);
+						render();
+						})();
+						</script>
+					<div class="layers__header">
+						<div class="layers__caption">&#10084;Welcome to my site&#10084;</div>
+						<div class="layers__title">Fairy forest</div>
+					</div>
+					<div class="layer layers__base" style="background-image: url(./img/layer-base.png);"></div>
+					<div class="layer layers__middle" style="background-image: url(./img/layer-middle.png);"></div>
+					<div class="layer layers__front" style="background-image: url(./img/layer-front.png);"></div>
+				</div>
+				</header>
+				<article class="main-article" style="background-image: url(./img/dungeon.jpg);">
+					<div class="main-article__content">
+						<h2 class="main-article__header">Приколюшно да?</h2>
+						<p class="main-article__paragraph">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ad, beatae harum velit nobis earum eveniet nesciunt provident placeat dolore quidem, tenetur sed vel impedit
+						ipsa ullam cum dicta porro. Culpa, sit reprehenderit!</p>
+					</div>
+					<div class="copy">©Me</div>
+				</article>
+		</div>
+	</div>
+</body>
+</html>
