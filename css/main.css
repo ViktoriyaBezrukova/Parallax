@@ -135,7 +135,8 @@ body {
 
 canvas{
 	position: absolute;
-	opacity: 0.09;
+	top: 0;
+	opacity: 0.20;
 }
 .content{
 	will-change: transform;
